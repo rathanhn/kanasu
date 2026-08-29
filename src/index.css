@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-dark: #121110;
+    --bg-card: #1A1816;
+    --text-primary: #FDFBF7;
+    --text-secondary: #D4C9BC;
+    --text-muted: #9E9182;
+    --accent-terracotta: #C86D51;
+    --accent-gold: #C5A059;
+    --border-warm: rgba(197, 160, 89, 0.2);
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+    touch-action: manipulation;
+  }
+}
+
+/* Traditional Kannada & Serif Custom Font Families */
+.font-kannada {
+  font-family: 'Tiro Kannada', 'Noto Serif Kannada', serif;
+}
+
+.font-kannada-traditional {
+  font-family: 'Tiro Kannada', serif;
+}
+
+.font-kannada-hubballi {
+  font-family: 'Hubballi', cursive;
+}
+
+.font-kannada-sans {
+  font-family: 'Anek Kannada', sans-serif;
+}
+
+.font-serif-title {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #121110;
+}
+::-webkit-scrollbar-thumb {
+  background: #3E2723;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C86D51;
+}
+
+/* Glassmorphism Cards */
+.glass-panel {
+  background: rgba(26, 24, 22, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card-light {
+  background: rgba(253, 251, 247, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(253, 251, 247, 0.1);
+}
+
+.gold-border-glow {
+  box-shadow: 0 0 25px rgba(197, 160, 89, 0.15);
+}
+
+/* 3D Door Perspective Animation */
+.perspective-1000 {
+  perspective: 1200px;
+}
+
+.door-left {
+  transform-origin: left center;
+  transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.door-right {
+  transform-origin: right center;
+  transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.door-open-left {
+  transform: rotateY(-115deg);
+}
+
+.door-open-right {
+  transform: rotateY(115deg);
+}
+
+/* Subtle Shimmer & Particles */
+@keyframes warmGlowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.animate-glow-pulse {
+  animation: warmGlowPulse 6s ease-in-out infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: floatSlow 5s ease-in-out infinite;
+}
