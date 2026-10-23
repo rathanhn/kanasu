@@ -4,6 +4,7 @@ import {
   collection, 
   addDoc, 
   setDoc,
+  deleteDoc,
   doc, 
   getDocs, 
   onSnapshot, 
@@ -168,5 +169,41 @@ export function subscribeToAnalytics(callback) {
   } catch (e) {
     console.warn('subscribeToAnalytics error:', e);
     return () => {};
+  }
+}
+
+/**
+ * Delete an RSVP by ID from Firestore
+ */
+export async function deleteRsvpFromFirebase(id) {
+  try {
+    await deleteDoc(doc(db, 'rsvps', id));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting RSVP from Firebase:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Reset Analytics counters to 0
+ */
+export async function resetAnalyticsInFirebase() {
+  try {
+    const summaryRef = doc(db, 'analytics', 'summary');
+    await setDoc(summaryRef, {
+      totalVisits: 0,
+      uniqueSessions: 0,
+      totalDoorsOpened: 0,
+      totalRSVPs: 0,
+      totalAttending: 0,
+      totalMaybe: 0,
+      totalGuestsAttending: 0,
+      updatedAt: new Date().toISOString()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error resetting analytics in Firebase:', error);
+    return { success: false, error: error.message };
   }
 }

@@ -19,9 +19,15 @@ import {
   ShieldCheck,
   Smartphone,
   ExternalLink,
-  MessageSquare
+  MessageSquare,
+  Trash2
 } from 'lucide-react';
-import { subscribeToRsvps, subscribeToAnalytics } from '../utils/firebase';
+import { 
+  subscribeToRsvps, 
+  subscribeToAnalytics,
+  deleteRsvpFromFirebase,
+  resetAnalyticsInFirebase
+} from '../utils/firebase';
 
 const ADMIN_PASSCODE = '1511'; // 15th November passcode
 
@@ -77,33 +83,24 @@ export default function AdminDashboard({ onBackToInvitation }) {
     };
   }, [isAuthenticated]);
 
-  // Merge with localStorage backup if empty or offline
+  // Only display real RSVP data directly from Firebase Firestore
   const allRsvps = useMemo(() => {
-    if (rsvps.length > 0) return rsvps;
-
-    const localData = localStorage.getItem('kanasu_rsvp_data');
-    if (localData) {
-      try {
-        const parsed = JSON.parse(localData);
-        if (!parsed.name || parsed.name.toLowerCase().includes('test') || parsed.name.toLowerCase().includes('anand')) {
-          return [];
-        }
-        return [{
-          id: 'local_current',
-          name: parsed.name,
-          guestCount: parsed.guestCount || 1,
-          status: parsed.status,
-          createdAt: parsed.timestamp || new Date().toISOString(),
-          isLocalBackup: true
-        }];
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return [];
+    return rsvps.filter(r => r.name && !r.name.toLowerCase().includes('dummy'));
   }, [rsvps]);
 
-  // Calculate high-level numbers
+  // Delete RSVP item from Firestore
+  const handleDeleteRsvp = async (id, name) => {
+    if (!window.confirm(`Delete RSVP record for "${name}" from database?`)) return;
+    await deleteRsvpFromFirebase(id);
+  };
+
+  // Reset visits / doors opened counters
+  const handleResetAnalytics = async () => {
+    if (!window.confirm('Reset all visit and door analytics counters to 0?')) return;
+    await resetAnalyticsInFirebase();
+  };
+
+  // Calculate high-level numbers strictly from real database counts
   const stats = useMemo(() => {
     const totalResponses = allRsvps.length;
     const attendingResponses = allRsvps.filter(r => r.status === 'yes');
@@ -125,8 +122,8 @@ export default function AdminDashboard({ onBackToInvitation }) {
       totalMaybeCount: maybeResponses.length,
       totalAttendingGuests,
       totalMaybeGuests,
-      totalVisits: analytics?.totalVisits || (totalResponses > 0 ? totalResponses * 2 : 1),
-      doorsOpened: analytics?.totalDoorsOpened || (totalResponses > 0 ? totalResponses : 1)
+      totalVisits: Number(analytics?.totalVisits) || 0,
+      doorsOpened: Number(analytics?.totalDoorsOpened) || 0
     };
   }, [allRsvps, analytics]);
 
@@ -270,6 +267,14 @@ export default function AdminDashboard({ onBackToInvitation }) {
             >
               <Download className="w-4 h-4 text-[#C5A059]" />
               <span>Export CSV</span>
+            </button>
+
+            <button
+              onClick={handleResetAnalytics}
+              className="px-3 py-2.5 rounded-xl glass-card-light text-[#9E9182] hover:text-rose-400 border border-white/10 text-xs font-mono transition-colors"
+              title="Reset test visit numbers to 0"
+            >
+              Reset Visits
             </button>
 
             <button
@@ -515,7 +520,7 @@ export default function AdminDashboard({ onBackToInvitation }) {
                       </div>
                     </div>
 
-                    {/* Quick WhatsApp contact to thank/confirm */}
+                    {/* Quick WhatsApp contact to thank/confirm & delete */}
                     <div className="flex items-center gap-2 w-full sm:w-auto justify-end pt-2 sm:pt-0">
                       <a
                         href={`https://wa.me/?text=${encodeURIComponent(
@@ -529,6 +534,16 @@ export default function AdminDashboard({ onBackToInvitation }) {
                         <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
                         <span>Message</span>
                       </a>
+
+                      {rsvp.id && (
+                        <button
+                          onClick={() => handleDeleteRsvp(rsvp.id, rsvp.name)}
+                          className="p-1.5 rounded-xl bg-white/5 hover:bg-rose-500/20 text-[#9E9182] hover:text-rose-400 border border-white/10 transition-colors"
+                          title="Delete this RSVP record"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </motion.div>
                 );
