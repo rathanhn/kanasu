@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Navigation, Copy, Check, Compass, Car } from 'lucide-react';
+import { MapPin, Navigation, Copy, Check, Car, Phone, MessageSquare } from 'lucide-react';
 
 export default function LocationSection({ eventDetails }) {
   const [copied, setCopied] = useState(false);
 
-  const googleMapsUrl = eventDetails.mapUrl || 
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Bylakuppe, Mysore district, Karnataka, India')}`;
+  const googleMapsUrl = eventDetails?.mapUrl || 'https://maps.app.goo.gl/c3TQwAhQYXHszE5u5';
+  const contactPhone = eventDetails?.contactPhone || '7899359217';
 
-  const fullAddress = `${eventDetails.venueName || 'Kanasu House'}, Near Golden Temple Road, Bylakuppe, Mysore District, Karnataka - 571104`;
+  const addressLines = [
+    'House No. 507/10, Site No. 10',
+    'Kanushi Layout, Bylakuppe',
+    'Haranahalli Hobli, Mysuru District',
+    'Karnataka – 571104, India'
+  ];
+
+  const fullAddress = eventDetails?.address || addressLines.join('\n');
+  const landmark = eventDetails?.landmark || 'Kanushi Layout, Bylakuppe (Haranahalli Hobli)';
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(fullAddress);
@@ -54,42 +62,46 @@ export default function LocationSection({ eventDetails }) {
 
           {/* Interactive Map Visual Card */}
           <div className="relative w-full h-52 sm:h-64 rounded-2xl overflow-hidden border border-white/10 mb-6 group">
-            {/* Styled Map Preview background */}
             <iframe
               title="Kanasu Location Map"
               width="100%"
               height="100%"
               frameBorder="0"
               style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)' }}
-              src="https://maps.google.com/maps?q=Bylakuppe,Karnataka&t=&z=13&ie=UTF8&iwloc=&output=embed"
+              src="https://maps.google.com/maps?q=Kanushi+Layout,Bylakuppe,Karnataka&t=&z=14&ie=UTF8&iwloc=&output=embed"
               allowFullScreen
             />
             {/* Map Custom Pin Overlay */}
             <div className="absolute inset-0 bg-black/20 pointer-events-none flex items-center justify-center">
               <div className="px-4 py-2 rounded-full glass-panel border border-[#C86D51] text-[#FDFBF7] shadow-2xl flex items-center gap-2 animate-bounce">
                 <MapPin className="w-5 h-5 text-[#C86D51] fill-[#C86D51]" />
-                <span className="text-xs font-semibold font-serif-title">ಕನಸು KANASU Home</span>
+                <span className="text-xs font-semibold font-serif-title">ಕನಸು (KANASU) Home</span>
               </div>
             </div>
           </div>
 
           {/* Address Details */}
-          <div className="p-4 rounded-2xl bg-[#121110]/90 border border-white/5 mb-6 text-left space-y-2">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#121110]/90 border border-white/5 mb-6 text-left space-y-3">
             <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-[#C86D51] shrink-0 mt-0.5" />
+              <MapPin className="w-5 h-5 text-[#C86D51] shrink-0 mt-1" />
               <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-[#9E9182] block">Destination Address</span>
-                <p className="text-sm font-medium text-[#FDFBF7] leading-relaxed mt-0.5">
-                  {fullAddress}
-                </p>
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#9E9182] block mb-1">
+                  Destination Address
+                </span>
+                <div className="text-sm font-medium text-[#FDFBF7] leading-relaxed space-y-0.5">
+                  <p className="font-semibold text-[#FDFBF7]">House No. 507/10, Site No. 10</p>
+                  <p className="text-[#D4C9BC]">Kanushi Layout, Bylakuppe</p>
+                  <p className="text-[#D4C9BC]">Haranahalli Hobli, Mysuru District</p>
+                  <p className="text-[#9E9182] text-xs">Karnataka – 571104, India</p>
+                </div>
               </div>
             </div>
 
             <div className="h-[1px] w-full bg-white/5 my-2" />
 
             <div className="flex items-center gap-2 text-xs text-[#D4C9BC] font-mono">
-              <Car className="w-4 h-4 text-[#C5A059]" />
-              <span>Landmark: Near Main Golden Temple Road, Bylakuppe</span>
+              <Car className="w-4 h-4 text-[#C5A059] shrink-0" />
+              <span>Landmark: <span className="text-[#FDFBF7]">{landmark}</span></span>
             </div>
           </div>
 

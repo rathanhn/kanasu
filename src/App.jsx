@@ -9,26 +9,50 @@ import LocationSection from './components/LocationSection';
 import RsvpSection from './components/RsvpSection';
 import FinalReveal from './components/FinalReveal';
 import FloatingNav from './components/FloatingNav';
-import ShareModal from './components/ShareModal';
 import SettingsModal from './components/SettingsModal';
+import AdminDashboard from './components/AdminDashboard';
+import SharePage from './components/SharePage';
+import { HOST_CONTACTS } from './components/RsvpSection';
+import { trackPageVisit } from './utils/firebase';
+import { ambientAudio } from './utils/audioSystem';
 
 const DEFAULT_EVENT_DETAILS = {
-  date: 'Sunday, October 18, 2026',
-  isoDate: '2026-10-18',
-  time: '9:30 AM IST (Muhurtham 9:45 AM - 10:30 AM)',
-  venueName: 'ಕನಸು (KANASU) House',
-  location: 'Bylakuppe, Karnataka',
+  date: 'Sunday, 15th November 2026',
+  isoDate: '2026-11-15',
+  time: '9:00 AM onwards (Muhurtham: 09:33 AM)',
+  venueName: 'KANASU (ಕನಸು)',
+  address: 'House No. 507/10, Site No. 10, Kanushi Layout, Bylakuppe, Haranahalli Hobli, Mysuru District, Karnataka – 571104',
+  landmark: 'Kanushi Layout, Bylakuppe (Haranahalli Hobli)',
+  location: 'Bylakuppe, Mysuru District, Karnataka',
   hostNames: 'The Family of ಕನಸು (KANASU)',
-  mapUrl: 'https://maps.google.com/?q=Bylakuppe,Karnataka',
+  contactPhone: '7899359217',
+  contacts: HOST_CONTACTS,
+  mapUrl: 'https://maps.app.goo.gl/c3TQwAhQYXHszE5u5',
+};
+
+const getRoute = () => {
+  if (typeof window === 'undefined') return 'home';
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  const search = window.location.search.toLowerCase();
+  if (path === '/admin' || path.startsWith('/admin') || hash === '#/admin' || search.includes('admin=true')) {
+    return 'admin';
+  }
+  if (path === '/share' || path.startsWith('/share') || hash === '#/share' || search.includes('share=true')) {
+    return 'share';
+  }
+  return 'home';
 };
 
 export default function App() {
+  // Route state: 'home' | 'admin' | 'share'
+  const [currentRoute, setCurrentRoute] = useState(() => getRoute());
+
   // Navigation Flow State: 'opening' -> 'door' -> 'main'
   const [stage, setStage] = useState('opening'); 
   const [activeSection, setActiveSection] = useState('opening');
   
   // Modals
-  const [isShareOpen, setIsShareOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Dynamic Event Details State
@@ -36,13 +60,44 @@ export default function App() {
     const saved = localStorage.getItem('kanasu_event_details');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Automatically migrate if previous placeholder date was cached
+        if (parsed.isoDate === '2026-10-18') {
+          return DEFAULT_EVENT_DETAILS;
+        }
+        return { ...DEFAULT_EVENT_DETAILS, ...parsed };
       } catch (e) {
         console.error(e);
       }
     }
     return DEFAULT_EVENT_DETAILS;
   });
+
+  // Track page visit on mount & start ambient BGM
+  useEffect(() => {
+    trackPageVisit();
+    ambientAudio.start();
+  }, []);
+
+  // Listen for browser URL back/forward and hash navigation
+  useEffect(() => {
+    const handleUrlChange = () => {
+      setCurrentRoute(getRoute());
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
+  const navigateToHome = () => {
+    window.history.pushState(null, '', '/');
+    setCurrentRoute('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const saveEventDetails = (newDetails) => {
     setEventDetails(newDetails);
@@ -55,6 +110,7 @@ export default function App() {
   };
 
   const handleEnterHome = () => {
+    ambientAudio.start();
     setStage('door');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -88,7 +144,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (stage !== 'main') return;
+    if (stage !== 'main' || currentRoute !== 'home') return;
 
     const sections = ['house-reveal', 'story', 'invitation', 'location', 'rsvp'];
     const handleScroll = () => {
@@ -109,7 +165,17 @@ export default function App() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [stage]);
+  }, [stage, currentRoute]);
+
+  // If viewing /admin, render Admin Dashboard
+  if (currentRoute === 'admin') {
+    return <AdminDashboard onBackToInvitation={navigateToHome} />;
+  }
+
+  // If viewing /share, render dedicated Share Page
+  if (currentRoute === 'share') {
+    return <SharePage onBackToInvitation={navigateToHome} eventDetails={eventDetails} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#121110] text-[#FDFBF7] font-sans relative selection:bg-[#C86D51] selection:text-white">
@@ -145,7 +211,7 @@ export default function App() {
           <LocationSection eventDetails={eventDetails} />
 
           {/* 09 — RSVP Section */}
-          <RsvpSection />
+          <RsvpSection eventDetails={eventDetails} />
 
           {/* 10 — Final Reveal */}
           <FinalReveal />
@@ -156,15 +222,7 @@ export default function App() {
       <FloatingNav
         activeSection={stage === 'opening' ? 'opening' : activeSection}
         onNavigate={handleNavigate}
-        onOpenShare={() => setIsShareOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
-      />
-
-      {/* Share Modal */}
-      <ShareModal
-        isOpen={isShareOpen}
-        onClose={() => setIsShareOpen(false)}
-        eventDetails={eventDetails}
       />
 
       {/* Settings / Customizer Modal */}

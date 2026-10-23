@@ -13,7 +13,7 @@ export default function ShareModal({ isOpen, onClose, eventDetails }) {
     ? `Dear ${guestRecipientName.trim()},\n\n` 
     : '';
 
-  const shareText = `${personalizedGreeting}*ಗೃಹ ಪ್ರವೇಶ ಆಹ್ವಾನ · GRIHA PRAVESH INVITATION*\n\n"A dream has become a home."\n\nWith the blessings of our elders, we warmly invite you to celebrate the Griha Pravesh of our new home:\n\n*ಕನಸು (KANASU)*\nLocation: Bylakuppe, Karnataka\nDate: ${eventDetails.date}\nTime: ${eventDetails.time}\n\nExperience our digital housewarming invitation here:\n${currentUrl}`;
+  const shareText = `${personalizedGreeting}*ಗೃಹ ಪ್ರವೇಶ ಆಹ್ವಾನ · GRIHA PRAVESH INVITATION*\n\n"A dream has become a home."\n\nWith the blessings of our elders and the love of our family, we warmly invite you to celebrate the Griha Pravesh of our new home:\n\n*ಕನಸು (KANASU)*\n📅 Date: ${eventDetails.date}\n⏰ Muhurtham: ${eventDetails.time}\n\n📍 Address:\nHouse No. 507/10, Site No. 10, Kanushi Layout, Bylakuppe, Haranahalli Hobli, Mysuru District, Karnataka – 571104\n\n🗺️ Google Maps Location:\n${eventDetails.mapUrl || 'https://maps.app.goo.gl/c3TQwAhQYXHszE5u5'}\n\n📞 Contact: +91 ${eventDetails.contactPhone || '7899359217'}\n\nExperience our digital housewarming invitation here:\n${currentUrl}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareText);

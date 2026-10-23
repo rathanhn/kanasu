@@ -60,7 +60,7 @@ export default function FinalReveal() {
           className="space-y-2"
         >
           <h3 className="text-3xl sm:text-4xl md:text-5xl font-kannada font-bold text-[#FDFBF7] flex items-center justify-center gap-2">
-            ನಮ್ಮ ಕನಸಿಗೆ ನಿಮ್ಮ ಸ್ವಾಗತ <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-[#C86D51] fill-[#C86D51] inline-block" />
+            ನಮ್ಮ ಕನಸಿಗೆ ನಿಮಗೆ ಸ್ವಾಗತ <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-[#C86D51] fill-[#C86D51] inline-block" />
           </h3>
           <p className="text-sm sm:text-base font-serif-title italic text-[#C5A059]">
             Welcome to our dream.

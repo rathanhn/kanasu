@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { KeyRound } from 'lucide-react';
 import { ambientAudio } from '../utils/audioSystem';
+import { trackDoorOpened } from '../utils/firebase';
 
 export default function DoorExperience({ onDoorOpened }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ export default function DoorExperience({ onDoorOpened }) {
     setIsOpen(true);
     ambientAudio.playDoorChime();
     ambientAudio.start();
+    trackDoorOpened();
 
     // Trigger house reveal transition after door swing animation completes
     setTimeout(() => {

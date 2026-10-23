@@ -78,8 +78,8 @@ export default function InvitationSection({ eventDetails, onOpenSettings }) {
               className="w-56 sm:w-64 h-auto object-contain drop-shadow-[0_6px_25px_rgba(197,160,89,0.35)] mb-1"
             />
             <div className="flex items-center gap-1.5 text-xs text-[#9E9182] font-mono mt-1">
-              <MapPin className="w-3.5 h-3.5 text-[#C86D51]" />
-              <span>{eventDetails.venueName || 'Kanasu House'}, Bylakuppe, Karnataka</span>
+              <MapPin className="w-3.5 h-3.5 text-[#C86D51] shrink-0" />
+              <span>{eventDetails.venueName || 'KANASU'}, Kanushi Layout, Bylakuppe</span>
             </div>
           </div>
 

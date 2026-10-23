@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
-import { Home, BookOpen, HeartHandshake, MapPin, CalendarCheck, Music, Share2, Settings } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Home, BookOpen, HeartHandshake, MapPin, CalendarCheck, Music, Settings } from 'lucide-react';
 import { ambientAudio } from '../utils/audioSystem';
 
-export default function FloatingNav({ activeSection, onNavigate, onOpenShare, onOpenSettings }) {
-  const [isPlaying, setIsPlaying] = useState(false);
+export default function FloatingNav({ activeSection, onNavigate, onOpenSettings }) {
+  const [isPlaying, setIsPlaying] = useState(ambientAudio.isPlaying);
+
+  useEffect(() => {
+    const unsubscribe = ambientAudio.subscribe((playing) => {
+      setIsPlaying(playing);
+    });
+    return unsubscribe;
+  }, []);
 
   const toggleAudio = () => {
-    const newState = ambientAudio.toggle();
-    setIsPlaying(newState);
+    ambientAudio.toggle();
   };
 
   return (
@@ -75,15 +81,7 @@ export default function FloatingNav({ activeSection, onNavigate, onOpenShare, on
           title="Toggle Music"
         >
           <Music className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">{isPlaying ? '♫ Playing' : '♫ Music'}</span>
-        </button>
-
-        <button
-          onClick={onOpenShare}
-          className="p-2 rounded-full text-[#D4C9BC] hover:text-white hover:bg-white/10 transition-all"
-          title="Share Invitation"
-        >
-          <Share2 className="w-4 h-4" />
+          <span className="hidden sm:inline">{isPlaying ? '♫ Music On' : '♫ Music Off'}</span>
         </button>
 
         <button

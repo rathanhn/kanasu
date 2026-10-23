@@ -1,56 +1,86 @@
-// Web Audio Synthesizer for Ambient Housewarming Soundscape
-// Clean, elegant, soothing Indian ambient pentatonic harmony (C Major / Raga Mohanam notes: C, D, E, G, A)
+// Dedicated Audio Engine for Background Music (BGM.mp3)
+// Plays /BGM.mp3 by default, with automatic interaction handling for browser autoplay policies.
 
-class AmbientAudioEngine {
+class BGMSystem {
   constructor() {
-    this.ctx = null;
+    this.audio = null;
     this.isPlaying = false;
-    this.masterGain = null;
-    this.timerId = null;
-    this.isMuted = false;
+    this.listeners = new Set();
+    this.chimeCtx = null;
+    this.initialized = false;
   }
 
   init() {
-    if (this.ctx) return;
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    this.ctx = new AudioCtx();
+    if (this.initialized) return;
+    if (typeof window === 'undefined') return;
 
-    this.masterGain = this.ctx.createGain();
-    this.masterGain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-    this.masterGain.connect(this.ctx.destination);
+    this.initialized = true;
+    this.audio = new Audio('/BGM.mp3');
+    this.audio.loop = true;
+    this.audio.volume = 0.65;
+    this.audio.preload = 'auto';
+
+    this.audio.addEventListener('play', () => {
+      this.isPlaying = true;
+      this.notifyListeners();
+    });
+
+    this.audio.addEventListener('pause', () => {
+      this.isPlaying = false;
+      this.notifyListeners();
+    });
+
+    // Auto-listen for first user interaction anywhere to ensure BGM starts if browser blocked direct autoplay
+    const unlockAutoplay = () => {
+      if (this.audio && !this.isPlaying) {
+        this.start();
+      }
+      window.removeEventListener('click', unlockAutoplay);
+      window.removeEventListener('touchstart', unlockAutoplay);
+      window.removeEventListener('keydown', unlockAutoplay);
+    };
+
+    window.addEventListener('click', unlockAutoplay, { once: true });
+    window.addEventListener('touchstart', unlockAutoplay, { once: true });
+    window.addEventListener('keydown', unlockAutoplay, { once: true });
+
+    // Try starting right away
+    this.start();
   }
 
   start() {
-    this.init();
-    if (!this.ctx) return;
-
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    if (!this.initialized) {
+      this.init();
     }
+    if (!this.audio) return;
 
-    if (this.isPlaying) return;
-    this.isPlaying = true;
-
-    // Start warm background drone (Tanpura pad effect)
-    this.startDrone();
-
-    // Schedule gentle flute notes (Raga Mohanam / Pentatonic)
-    this.scheduleNotes();
+    const promise = this.audio.play();
+    if (promise !== undefined) {
+      promise
+        .then(() => {
+          this.isPlaying = true;
+          this.notifyListeners();
+        })
+        .catch(() => {
+          // Will start on first user interaction via unlockAutoplay
+          this.isPlaying = false;
+          this.notifyListeners();
+        });
+    }
   }
 
   stop() {
-    if (this.timerId) {
-      clearInterval(this.timerId);
-      this.timerId = null;
-    }
-    if (this.masterGain && this.ctx) {
-      this.masterGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 1);
+    if (this.audio) {
+      this.audio.pause();
     }
     this.isPlaying = false;
+    this.notifyListeners();
   }
 
   toggle() {
+    if (!this.initialized) {
+      this.init();
+    }
     if (this.isPlaying) {
       this.stop();
       return false;
@@ -60,96 +90,53 @@ class AmbientAudioEngine {
     }
   }
 
-  startDrone() {
-    if (!this.ctx) return;
-    
-    // Tanpura C3 (130.81 Hz) and G3 (196 Hz) root frequencies
-    const freqs = [130.81, 196.00, 261.63]; 
-    freqs.forEach(freq => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
+  subscribe(listener) {
+    this.listeners.add(listener);
+    listener(this.isPlaying);
+    return () => this.listeners.delete(listener);
+  }
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-
-      // Lowpass filter for warm soft pad
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(450, this.ctx.currentTime);
-
-      gain.gain.setValueAtTime(0.03, this.ctx.currentTime);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.masterGain);
-
-      osc.start();
+  notifyListeners() {
+    this.listeners.forEach((cb) => {
+      try {
+        cb(this.isPlaying);
+      } catch (e) {
+        console.error(e);
+      }
     });
   }
 
-  scheduleNotes() {
-    // Pentatonic frequencies in C major (Mohanam raga)
-    // C4 (261.63), D4 (293.66), E4 (329.63), G4 (392.00), A4 (440.00), C5 (523.25)
-    const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 659.25];
+  // Soft door chime sound effect on door open
+  playDoorChime() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!this.chimeCtx) {
+        this.chimeCtx = new AudioCtx();
+      }
+      if (this.chimeCtx.state === 'suspended') {
+        this.chimeCtx.resume();
+      }
+      const now = this.chimeCtx.currentTime;
+      const osc = this.chimeCtx.createOscillator();
+      const gain = this.chimeCtx.createGain();
 
-    const playRandomNote = () => {
-      if (!this.isPlaying || !this.ctx) return;
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(329.63, now); // E4
+      osc.frequency.exponentialRampToValueAtTime(523.25, now + 0.6); // C5
 
-      const noteFreq = scale[Math.floor(Math.random() * scale.length)];
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      const filter = this.ctx.createBiquadFilter();
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
 
-      // Flute-like gentle sine with soft overtone
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(noteFreq, this.ctx.currentTime);
-
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(1200, this.ctx.currentTime);
-
-      const now = this.ctx.currentTime;
-      // Soft attack, long sustain, gentle decay
-      gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.08, now + 1.2);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.5);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.masterGain);
+      osc.connect(gain);
+      gain.connect(this.chimeCtx.destination);
 
       osc.start(now);
-      osc.stop(now + 4.6);
-    };
-
-    playRandomNote();
-    this.timerId = setInterval(() => {
-      if (this.isPlaying) playRandomNote();
-    }, 3800);
-  }
-
-  // Play a soft wooden click/chime effect when the user opens the door
-  playDoorChime() {
-    this.init();
-    if (!this.ctx) return;
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(329.63, now); // E4
-    osc.frequency.exponentialRampToValueAtTime(523.25, now + 0.6); // C5
-
-    gain.gain.setValueAtTime(0.12, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
-
-    osc.connect(gain);
-    gain.connect(this.masterGain || this.ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 2.1);
+      osc.stop(now + 2.1);
+    } catch (e) {
+      console.warn('Door chime notification:', e);
+    }
   }
 }
 
-export const ambientAudio = new AmbientAudioEngine();
+export const ambientAudio = new BGMSystem();

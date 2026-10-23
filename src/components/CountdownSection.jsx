@@ -12,7 +12,7 @@ export default function CountdownSection({ eventIsoDate }) {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const targetDate = new Date(eventIsoDate ? `${eventIsoDate}T09:30:00` : '2026-10-18T09:30:00');
+      const targetDate = new Date(eventIsoDate ? `${eventIsoDate}T09:33:00` : '2026-11-15T09:33:00');
       const now = new Date();
       const difference = targetDate - now;
 

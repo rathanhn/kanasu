@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Save, RotateCcw, Settings, Calendar, Clock, MapPin, Users } from 'lucide-react';
+import { X, Save, RotateCcw, Settings, Calendar, Clock, MapPin, Users, Phone, Map } from 'lucide-react';
 
 export default function SettingsModal({ isOpen, onClose, eventDetails, onSaveDetails, onResetDetails }) {
   const [formData, setFormData] = useState(eventDetails);
+
+  useEffect(() => {
+    if (eventDetails) {
+      setFormData(eventDetails);
+    }
+  }, [eventDetails, isOpen]);
 
   if (!isOpen) return null;
 
@@ -52,9 +58,9 @@ export default function SettingsModal({ isOpen, onClose, eventDetails, onSaveDet
               </label>
               <input
                 type="text"
-                value={formData.date}
+                value={formData.date || ''}
                 onChange={(e) => handleChange('date', e.target.value)}
-                placeholder="e.g. Sunday, October 18, 2026"
+                placeholder="e.g. Sunday, 15th November 2026"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
                 required
               />
@@ -67,7 +73,7 @@ export default function SettingsModal({ isOpen, onClose, eventDetails, onSaveDet
               </label>
               <input
                 type="date"
-                value={formData.isoDate}
+                value={formData.isoDate || ''}
                 onChange={(e) => handleChange('isoDate', e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
                 required
@@ -81,9 +87,9 @@ export default function SettingsModal({ isOpen, onClose, eventDetails, onSaveDet
               </label>
               <input
                 type="text"
-                value={formData.time}
+                value={formData.time || ''}
                 onChange={(e) => handleChange('time', e.target.value)}
-                placeholder="e.g. 9:30 AM IST (Muhurtham 9:45 AM - 10:30 AM)"
+                placeholder="e.g. 9:00 AM onwards (Muhurtham: 09:33 AM)"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
                 required
               />
@@ -96,23 +102,37 @@ export default function SettingsModal({ isOpen, onClose, eventDetails, onSaveDet
               </label>
               <input
                 type="text"
-                value={formData.venueName}
+                value={formData.venueName || ''}
                 onChange={(e) => handleChange('venueName', e.target.value)}
-                placeholder="e.g. Kanasu House"
+                placeholder="e.g. KANASU (ಕನಸು)"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
               />
             </div>
 
-            {/* Location City / Town */}
+            {/* Full Address */}
             <div>
               <label className="block text-[11px] font-mono uppercase tracking-wider text-[#9E9182] mb-1">
-                City / Region
+                Full Address
+              </label>
+              <textarea
+                rows={3}
+                value={formData.address || ''}
+                onChange={(e) => handleChange('address', e.target.value)}
+                placeholder="House No. 507/10, Site No. 10, Kanushi Layout, Bylakuppe..."
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51] resize-none"
+              />
+            </div>
+
+            {/* Landmark */}
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#9E9182] mb-1">
+                Landmark
               </label>
               <input
                 type="text"
-                value={formData.location}
-                onChange={(e) => handleChange('location', e.target.value)}
-                placeholder="e.g. Bylakuppe, Karnataka"
+                value={formData.landmark || ''}
+                onChange={(e) => handleChange('landmark', e.target.value)}
+                placeholder="e.g. Kanushi Layout, Bylakuppe (Haranahalli Hobli)"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
               />
             </div>
@@ -124,23 +144,37 @@ export default function SettingsModal({ isOpen, onClose, eventDetails, onSaveDet
               </label>
               <input
                 type="text"
-                value={formData.hostNames}
+                value={formData.hostNames || ''}
                 onChange={(e) => handleChange('hostNames', e.target.value)}
                 placeholder="e.g. The Family of ಕನಸು (KANASU)"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
               />
             </div>
 
+            {/* Host Contact Phone */}
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#9E9182] mb-1 flex items-center gap-1">
+                <Phone className="w-3.5 h-3.5 text-[#C5A059]" /> Contact Phone Number
+              </label>
+              <input
+                type="tel"
+                value={formData.contactPhone || ''}
+                onChange={(e) => handleChange('contactPhone', e.target.value)}
+                placeholder="e.g. 7899359217"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
+              />
+            </div>
+
             {/* Custom Google Maps URL */}
             <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#9E9182] mb-1">
-                Google Maps Directions URL
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#9E9182] mb-1 flex items-center gap-1">
+                <Map className="w-3.5 h-3.5 text-[#C5A059]" /> Google Maps Directions URL
               </label>
               <input
                 type="url"
                 value={formData.mapUrl || ''}
                 onChange={(e) => handleChange('mapUrl', e.target.value)}
-                placeholder="https://maps.google.com/..."
+                placeholder="https://maps.app.goo.gl/..."
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#121110] border border-[#C5A059]/30 text-[#FDFBF7] text-xs font-medium focus:outline-none focus:border-[#C86D51]"
               />
             </div>
