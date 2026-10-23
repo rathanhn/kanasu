@@ -32,15 +32,34 @@ const DEFAULT_EVENT_DETAILS = {
 
 const getRoute = () => {
   if (typeof window === 'undefined') return 'home';
-  const path = window.location.pathname.toLowerCase();
-  const hash = window.location.hash.toLowerCase();
+  const path = window.location.pathname.toLowerCase().trim();
+  const hash = window.location.hash.toLowerCase().trim();
   const search = window.location.search.toLowerCase();
-  if (path === '/admin' || path.startsWith('/admin') || hash === '#/admin' || search.includes('admin=true')) {
+
+  if (
+    path === '/admin' ||
+    path.startsWith('/admin/') ||
+    path.startsWith('/admin') ||
+    hash === '#/admin' ||
+    hash === '#admin' ||
+    hash.startsWith('#/admin') ||
+    search.includes('admin=true')
+  ) {
     return 'admin';
   }
-  if (path === '/share' || path.startsWith('/share') || hash === '#/share' || search.includes('share=true')) {
+
+  if (
+    path === '/share' ||
+    path.startsWith('/share/') ||
+    path.startsWith('/share') ||
+    hash === '#/share' ||
+    hash === '#share' ||
+    hash.startsWith('#/share') ||
+    search.includes('share=true')
+  ) {
     return 'share';
   }
+
   return 'home';
 };
 
