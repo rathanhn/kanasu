@@ -5,9 +5,12 @@ class BGMSystem {
   constructor() {
     this.audio = null;
     this.isPlaying = false;
+    this.isMutedByUser = false;
     this.listeners = new Set();
     this.chimeCtx = null;
     this.initialized = false;
+    this.unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'pointerup', 'keydown', 'scroll', 'wheel'];
+    this.handleInteraction = this.handleInteraction.bind(this);
   }
 
   init() {
@@ -17,7 +20,7 @@ class BGMSystem {
     this.initialized = true;
     this.audio = new Audio('/BGM.mp3');
     this.audio.loop = true;
-    this.audio.volume = 0.65;
+    this.audio.volume = 0.70;
     this.audio.preload = 'auto';
 
     this.audio.addEventListener('play', () => {
@@ -26,26 +29,26 @@ class BGMSystem {
     });
 
     this.audio.addEventListener('pause', () => {
-      this.isPlaying = false;
+      if (this.isMutedByUser) {
+        this.isPlaying = false;
+      }
       this.notifyListeners();
     });
 
-    // Auto-listen for first user interaction anywhere to ensure BGM starts if browser blocked direct autoplay
-    const unlockAutoplay = () => {
-      if (this.audio && !this.isPlaying) {
-        this.start();
-      }
-      window.removeEventListener('click', unlockAutoplay);
-      window.removeEventListener('touchstart', unlockAutoplay);
-      window.removeEventListener('keydown', unlockAutoplay);
-    };
+    // Listen across all interaction types to guarantee immediate playback on first gesture
+    this.unlockEvents.forEach((evt) => {
+      window.addEventListener(evt, this.handleInteraction, { passive: true });
+      document.addEventListener(evt, this.handleInteraction, { passive: true });
+    });
 
-    window.addEventListener('click', unlockAutoplay, { once: true });
-    window.addEventListener('touchstart', unlockAutoplay, { once: true });
-    window.addEventListener('keydown', unlockAutoplay, { once: true });
-
-    // Try starting right away
+    // Try starting immediately on load
     this.start();
+  }
+
+  handleInteraction() {
+    if (!this.isMutedByUser && this.audio && !this.isPlaying) {
+      this.start();
+    }
   }
 
   start() {
@@ -53,6 +56,7 @@ class BGMSystem {
       this.init();
     }
     if (!this.audio) return;
+    this.isMutedByUser = false;
 
     const promise = this.audio.play();
     if (promise !== undefined) {
@@ -61,8 +65,8 @@ class BGMSystem {
           this.isPlaying = true;
           this.notifyListeners();
         })
-        .catch(() => {
-          // Will start on first user interaction via unlockAutoplay
+        .catch((err) => {
+          // Autoplay was restricted by browser; will start on first touch/click
           this.isPlaying = false;
           this.notifyListeners();
         });
@@ -70,6 +74,7 @@ class BGMSystem {
   }
 
   stop() {
+    this.isMutedByUser = true;
     if (this.audio) {
       this.audio.pause();
     }
