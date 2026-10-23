@@ -40,11 +40,18 @@ export default function HouseReveal() {
           className="relative w-full rounded-2xl overflow-hidden glass-panel p-2 sm:p-3 mb-6 gold-border-glow shadow-2xl"
         >
           <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden group">
-            <img 
-              src="/IImage.png" 
-              alt="Actual Property Photo of Kanasu in Bylakuppe" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-            />
+            <picture className="w-full h-full">
+              <source srcSet="/IImage.webp" type="image/webp" />
+              <img 
+                src="/IImage.png" 
+                alt="Actual Property Photo of Kanasu in Bylakuppe" 
+                width="1672"
+                height="941"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
+            </picture>
             {/* Image Overlay Gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#121110] via-transparent to-black/20" />
             
@@ -83,11 +90,18 @@ export default function HouseReveal() {
           transition={{ duration: 0.8, delay: 0.7 }}
           className="w-full max-w-md flex justify-center py-2"
         >
-          <img 
-            src="/logo_transparent.png" 
-            alt="ಕನಸು · KANASU Logo" 
-            className="w-64 sm:w-80 md:w-96 h-auto object-contain drop-shadow-[0_8px_30px_rgba(197,160,89,0.35)] filter brightness-110"
-          />
+          <picture className="flex justify-center">
+            <source srcSet="/logo_transparent.webp" type="image/webp" />
+            <img 
+              src="/logo_transparent.png" 
+              alt="ಕನಸು · KANASU Logo" 
+              width="1672"
+              height="941"
+              loading="lazy"
+              decoding="async"
+              className="w-64 sm:w-80 md:w-96 h-auto object-contain drop-shadow-[0_8px_30px_rgba(197,160,89,0.35)] filter brightness-110"
+            />
+          </picture>
         </motion.div>
       </div>
     </section>

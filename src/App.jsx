@@ -222,7 +222,6 @@ export default function App() {
       <FloatingNav
         activeSection={stage === 'opening' ? 'opening' : activeSection}
         onNavigate={handleNavigate}
-        onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
       {/* Settings / Customizer Modal */}

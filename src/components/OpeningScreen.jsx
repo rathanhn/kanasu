@@ -18,11 +18,19 @@ export default function OpeningScreen({ onEnterHome }) {
           transition={{ duration: 1.2 }}
           className="w-full flex justify-center mb-6"
         >
-          <img 
-            src="/logo_transparent.png" 
-            alt="ಕನಸು · KANASU Housewarming Logo" 
-            className="w-full max-w-sm sm:max-w-md md:max-w-lg h-auto object-contain drop-shadow-[0_10px_35px_rgba(197,160,89,0.35)] filter brightness-110"
-          />
+          <picture className="w-full flex justify-center">
+            <source srcSet="/logo_transparent.webp" type="image/webp" />
+            <img 
+              src="/logo_transparent.png" 
+              alt="ಕನಸು · KANASU Housewarming Logo" 
+              width="1672"
+              height="941"
+              fetchPriority="high"
+              loading="eager"
+              decoding="sync"
+              className="w-full max-w-sm sm:max-w-md md:max-w-lg h-auto object-contain drop-shadow-[0_10px_35px_rgba(197,160,89,0.35)] filter brightness-110"
+            />
+          </picture>
         </motion.div>
 
         {/* Location Badge */}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Home, BookOpen, HeartHandshake, MapPin, CalendarCheck, Music, Settings } from 'lucide-react';
+import { Home, BookOpen, HeartHandshake, MapPin, CalendarCheck, Music } from 'lucide-react';
 import { ambientAudio } from '../utils/audioSystem';
 
-export default function FloatingNav({ activeSection, onNavigate, onOpenSettings }) {
+export default function FloatingNav({ activeSection, onNavigate }) {
   const [isPlaying, setIsPlaying] = useState(ambientAudio.isPlaying);
 
   useEffect(() => {
@@ -72,24 +72,16 @@ export default function FloatingNav({ activeSection, onNavigate, onOpenSettings 
 
       <div className="h-4 w-[1px] bg-[#C5A059]/30 mx-1"></div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center">
         <button
           onClick={toggleAudio}
-          className={`px-2.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all ${
+          className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all ${
             isPlaying ? 'bg-[#C5A059] text-[#121110] font-semibold animate-pulse' : 'bg-white/10 text-[#D4C9BC] hover:bg-white/20'
           }`}
           title="Toggle Music"
         >
           <Music className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">{isPlaying ? '♫ Music On' : '♫ Music Off'}</span>
-        </button>
-
-        <button
-          onClick={onOpenSettings}
-          className="p-1.5 rounded-full text-[#9E9182] hover:text-[#C5A059] hover:bg-white/10 transition-all"
-          title="Edit Details"
-        >
-          <Settings className="w-3.5 h-3.5" />
         </button>
       </div>
     </nav>

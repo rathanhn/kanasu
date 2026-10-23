@@ -7,11 +7,18 @@ export default function StorySection() {
     <section id="story" className="relative w-full flex flex-col items-center justify-center px-4 py-12 sm:py-16 bg-[#121110] text-[#FDFBF7] overflow-hidden">
       {/* Background Image Parallax Overlay */}
       <div className="absolute inset-0 z-0 opacity-25">
-        <img 
-          src="/IImage.png" 
-          alt="Original Kanasu Property Background" 
-          className="w-full h-full object-cover filter contrast-110"
-        />
+        <picture className="w-full h-full">
+          <source srcSet="/IImage.webp" type="image/webp" />
+          <img 
+            src="/IImage.png" 
+            alt="Original Kanasu Property Background" 
+            width="1672"
+            height="941"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover filter contrast-110"
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-b from-[#121110] via-[#121110]/85 to-[#121110]" />
       </div>
 

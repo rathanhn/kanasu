@@ -7,11 +7,18 @@ export default function FinalReveal() {
     <section className="relative min-h-screen w-full flex flex-col items-center justify-between px-6 py-16 bg-[#121110] text-[#FDFBF7] overflow-hidden select-none">
       {/* Background Property Photography */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="/IImage.png" 
-          alt="Original Kanasu Property Silhouette" 
-          className="w-full h-full object-cover opacity-40 filter contrast-125"
-        />
+        <picture className="w-full h-full">
+          <source srcSet="/IImage.webp" type="image/webp" />
+          <img 
+            src="/IImage.png" 
+            alt="Original Kanasu Property Silhouette" 
+            width="1672"
+            height="941"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover opacity-40 filter contrast-125"
+          />
+        </picture>
         <div className="absolute inset-0 bg-gradient-to-t from-[#121110] via-[#121110]/75 to-[#121110]/90" />
       </div>
 
@@ -26,11 +33,18 @@ export default function FinalReveal() {
           transition={{ duration: 1.2 }}
           className="w-full flex justify-center mb-8"
         >
-          <img 
-            src="/logo_transparent.png" 
-            alt="ಕನಸು · KANASU Logo" 
-            className="w-full max-w-sm sm:max-w-md h-auto object-contain drop-shadow-[0_10px_35px_rgba(197,160,89,0.35)] filter brightness-110"
-          />
+          <picture className="w-full flex justify-center">
+            <source srcSet="/logo_transparent.webp" type="image/webp" />
+            <img 
+              src="/logo_transparent.png" 
+              alt="ಕನಸು · KANASU Logo" 
+              width="1672"
+              height="941"
+              loading="lazy"
+              decoding="async"
+              className="w-full max-w-sm sm:max-w-md h-auto object-contain drop-shadow-[0_10px_35px_rgba(197,160,89,0.35)] filter brightness-110"
+            />
+          </picture>
         </motion.div>
 
         {/* Story Quote */}

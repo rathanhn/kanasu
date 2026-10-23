@@ -72,11 +72,18 @@ export default function InvitationSection({ eventDetails, onOpenSettings }) {
 
           {/* House Identity Logo in Card */}
           <div className="mb-6 flex flex-col items-center">
-            <img 
-              src="/logo_transparent.png" 
-              alt="ಕನಸು · KANASU Logo" 
-              className="w-56 sm:w-64 h-auto object-contain drop-shadow-[0_6px_25px_rgba(197,160,89,0.35)] mb-1"
-            />
+            <picture className="flex justify-center">
+              <source srcSet="/logo_transparent.webp" type="image/webp" />
+              <img 
+                src="/logo_transparent.png" 
+                alt="ಕನಸು · KANASU Logo" 
+                width="1672"
+                height="941"
+                loading="lazy"
+                decoding="async"
+                className="w-56 sm:w-64 h-auto object-contain drop-shadow-[0_6px_25px_rgba(197,160,89,0.35)] mb-1"
+              />
+            </picture>
             <div className="flex items-center gap-1.5 text-xs text-[#9E9182] font-mono mt-1">
               <MapPin className="w-3.5 h-3.5 text-[#C86D51] shrink-0" />
               <span>{eventDetails.venueName || 'KANASU'}, Kanushi Layout, Bylakuppe</span>

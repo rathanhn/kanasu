@@ -49,11 +49,18 @@ export default function DoorExperience({ onDoorOpened }) {
         
         {/* Glow Behind Door */}
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#C5A059]/40 via-[#FDFBF7]/20 to-transparent flex items-center justify-center overflow-hidden">
-          <img 
-            src="/IImage.png" 
-            alt="Kanasu Property Preview" 
-            className={`w-full h-full object-cover transition-transform duration-2000 ${isOpen ? 'scale-100 filter-none' : 'scale-110 blur-sm'}`}
-          />
+          <picture className="w-full h-full">
+            <source srcSet="/IImage.webp" type="image/webp" />
+            <img 
+              src="/IImage.png" 
+              alt="Kanasu Property Preview" 
+              width="1672"
+              height="941"
+              loading="eager"
+              decoding="async"
+              className={`w-full h-full object-cover transition-transform duration-2000 ${isOpen ? 'scale-100 filter-none' : 'scale-110 blur-sm'}`}
+            />
+          </picture>
           <div className="absolute inset-0 bg-gradient-to-t from-[#121110] via-transparent to-black/40" />
         </div>
 
@@ -65,11 +72,18 @@ export default function DoorExperience({ onDoorOpened }) {
           }`}
         >
           <div className="relative w-full h-full bg-[#2A1B16] border-l-4 border-t-4 border-[#3E2723]">
-            <img 
-              src="/assets/front_door.jpg" 
-              alt="Door Left" 
-              className="absolute left-0 top-0 h-full w-[200%] max-w-none object-cover opacity-90"
-            />
+            <picture>
+              <source srcSet="/assets/front_door.webp" type="image/webp" />
+              <img 
+                src="/assets/front_door.jpg" 
+                alt="Door Left" 
+                width="1200"
+                height="896"
+                loading="eager"
+                decoding="async"
+                className="absolute left-0 top-0 h-full w-[200%] max-w-none object-cover opacity-90"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/60" />
             
             {/* Left Brass Handle */}
@@ -89,11 +103,18 @@ export default function DoorExperience({ onDoorOpened }) {
           }`}
         >
           <div className="relative w-full h-full bg-[#2A1B16] border-r-4 border-t-4 border-[#3E2723]">
-            <img 
-              src="/assets/front_door.jpg" 
-              alt="Door Right" 
-              className="absolute right-0 top-0 h-full w-[200%] max-w-none object-cover opacity-90"
-            />
+            <picture>
+              <source srcSet="/assets/front_door.webp" type="image/webp" />
+              <img 
+                src="/assets/front_door.jpg" 
+                alt="Door Right" 
+                width="1200"
+                height="896"
+                loading="eager"
+                decoding="async"
+                className="absolute right-0 top-0 h-full w-[200%] max-w-none object-cover opacity-90"
+              />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-l from-black/40 via-transparent to-black/60" />
 
             {/* Right Brass Handle */}
