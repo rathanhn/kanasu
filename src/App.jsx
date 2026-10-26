@@ -143,11 +143,32 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [stage, currentRoute]);
 
+  const handleBackToHome = () => {
+    if (typeof window !== 'undefined') {
+      window.history.pushState({}, '', '/');
+    }
+    setCurrentRoute('home');
+    setStage('opening');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setCurrentRoute(getRoute());
+    };
+    window.addEventListener('popstate', handleRouteChange);
+    window.addEventListener('hashchange', handleRouteChange);
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('hashchange', handleRouteChange);
+    };
+  }, []);
+
   // If viewing /admin, render Admin Dashboard
   if (currentRoute === 'admin') {
     return (
       <Suspense fallback={<div className="min-h-screen bg-[#121110] text-[#C5A059] flex items-center justify-center font-serif text-lg">Loading Admin...</div>}>
-        <AdminDashboard onBackToInvitation={navigateToHome} />
+        <AdminDashboard onBackToInvitation={handleBackToHome} />
       </Suspense>
     );
   }
@@ -156,7 +177,7 @@ export default function App() {
   if (currentRoute === 'share') {
     return (
       <Suspense fallback={<div className="min-h-screen bg-[#121110] text-[#C5A059] flex items-center justify-center font-serif text-lg">Loading...</div>}>
-        <SharePage onBackToInvitation={navigateToHome} eventDetails={eventDetails} />
+        <SharePage onBackToInvitation={handleBackToHome} eventDetails={eventDetails} />
       </Suspense>
     );
   }

@@ -14,7 +14,7 @@ export default function SharePage({ onBackToInvitation, eventDetails }) {
   // Base URL for digital invitation (strips /share if present)
   const invitationUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/`
-    : 'https://kanasu-invitation.web.app/';
+    : 'https://kanasu-coorg.netlify.app/';
 
   const personalizedGreeting = recipientName.trim()
     ? `Dear ${recipientName.trim()},\n\n`
@@ -167,8 +167,34 @@ ${invitationUrl}`;
             </span>
           </div>
 
+          {/* Simulated WhatsApp Rich Link Preview Card */}
+          <div className="rounded-2xl border border-[#25D366]/30 bg-[#0d1418] p-3 shadow-lg space-y-2">
+            <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#25D366] font-semibold">
+              <MessageSquare className="w-3.5 h-3.5 fill-[#25D366]" />
+              <span>WhatsApp Link Preview Appearance:</span>
+            </div>
+            <div className="rounded-xl overflow-hidden border border-white/10 bg-[#1f2c34] text-left">
+              <img 
+                src="/og-banner.jpg" 
+                alt="Digital Invitation Preview Card" 
+                className="w-full aspect-[1.91/1] object-cover"
+              />
+              <div className="p-3 bg-[#1f2c34]">
+                <div className="text-[10px] text-[#8696a0] font-sans uppercase tracking-wider truncate">
+                  kanasu-coorg.netlify.app
+                </div>
+                <div className="text-xs sm:text-sm font-semibold text-[#e9edef] line-clamp-1 mt-0.5">
+                  ಗೃಹ ಪ್ರವೇಶ ಆಹ್ವಾನ | GRIHA PRAVESH INVITATION · ಕನಸು (KANASU)
+                </div>
+                <div className="text-[11px] text-[#8696a0] line-clamp-2 mt-0.5 leading-snug">
+                  A dream has become a home. Sunday, 15th Nov 2026 • Kanushi Layout, Bylakuppe • Tap to open interactive digital invitation.
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Formatted Message Card */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-[#121110] border border-[#C5A059]/20 text-xs sm:text-sm font-mono text-[#D4C9BC] whitespace-pre-wrap leading-relaxed shadow-inner max-h-[380px] overflow-y-auto selection:bg-[#C86D51] selection:text-white">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#121110] border border-[#C5A059]/20 text-xs sm:text-sm font-mono text-[#D4C9BC] whitespace-pre-wrap leading-relaxed shadow-inner max-h-[340px] overflow-y-auto selection:bg-[#C86D51] selection:text-white">
             {invitationMessage}
           </div>
 
