@@ -9,7 +9,6 @@ import LocationSection from './components/LocationSection';
 import RsvpSection from './components/RsvpSection';
 import FinalReveal from './components/FinalReveal';
 import FloatingNav from './components/FloatingNav';
-import SettingsModal from './components/SettingsModal';
 import AdminDashboard from './components/AdminDashboard';
 import SharePage from './components/SharePage';
 import { HOST_CONTACTS } from './components/RsvpSection';
@@ -71,62 +70,15 @@ export default function App() {
   const [stage, setStage] = useState('opening'); 
   const [activeSection, setActiveSection] = useState('opening');
   
-  // Modals
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  // Official production event details (locked for guests)
+  const eventDetails = DEFAULT_EVENT_DETAILS;
 
-  // Dynamic Event Details State
-  const [eventDetails, setEventDetails] = useState(() => {
-    const saved = localStorage.getItem('kanasu_event_details');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        // Automatically migrate if previous placeholder date was cached
-        if (parsed.isoDate === '2026-10-18') {
-          return DEFAULT_EVENT_DETAILS;
-        }
-        return { ...DEFAULT_EVENT_DETAILS, ...parsed };
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return DEFAULT_EVENT_DETAILS;
-  });
-
-  // Track page visit on mount & start ambient BGM
+  // Track page visit on mount, start ambient BGM, and clean up any old test cache
   useEffect(() => {
+    localStorage.removeItem('kanasu_event_details');
     trackPageVisit();
     ambientAudio.start();
   }, []);
-
-  // Listen for browser URL back/forward and hash navigation
-  useEffect(() => {
-    const handleUrlChange = () => {
-      setCurrentRoute(getRoute());
-    };
-
-    window.addEventListener('popstate', handleUrlChange);
-    window.addEventListener('hashchange', handleUrlChange);
-    return () => {
-      window.removeEventListener('popstate', handleUrlChange);
-      window.removeEventListener('hashchange', handleUrlChange);
-    };
-  }, []);
-
-  const navigateToHome = () => {
-    window.history.pushState(null, '', '/');
-    setCurrentRoute('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const saveEventDetails = (newDetails) => {
-    setEventDetails(newDetails);
-    localStorage.setItem('kanasu_event_details', JSON.stringify(newDetails));
-  };
-
-  const resetEventDetails = () => {
-    setEventDetails(DEFAULT_EVENT_DETAILS);
-    localStorage.removeItem('kanasu_event_details');
-  };
 
   const handleEnterHome = () => {
     ambientAudio.start();
@@ -218,10 +170,7 @@ export default function App() {
           <StorySection />
 
           {/* 05 — The Invitation */}
-          <InvitationSection 
-            eventDetails={eventDetails} 
-            onOpenSettings={() => setIsSettingsOpen(true)} 
-          />
+          <InvitationSection eventDetails={eventDetails} />
 
           {/* 07 — Countdown Timer */}
           <CountdownSection eventIsoDate={eventDetails.isoDate} />
@@ -241,15 +190,6 @@ export default function App() {
       <FloatingNav
         activeSection={stage === 'opening' ? 'opening' : activeSection}
         onNavigate={handleNavigate}
-      />
-
-      {/* Settings / Customizer Modal */}
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        eventDetails={eventDetails}
-        onSaveDetails={saveEventDetails}
-        onResetDetails={resetEventDetails}
       />
     </div>
   );

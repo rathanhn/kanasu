@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, MapPin, Download, Edit3 } from 'lucide-react';
+import { Calendar, Clock, MapPin, Download } from 'lucide-react';
 import { downloadCalendarEvent } from '../utils/calendar';
 
-export default function InvitationSection({ eventDetails, onOpenSettings }) {
+export default function InvitationSection({ eventDetails }) {
   const handleAddToCalendar = () => {
     downloadCalendarEvent({
       title: 'Griha Pravesh — ಕನಸು (KANASU)',
@@ -51,14 +51,6 @@ export default function InvitationSection({ eventDetails, onOpenSettings }) {
           transition={{ duration: 1, delay: 0.3 }}
           className="w-full glass-panel rounded-3xl p-6 sm:p-10 border border-[#C5A059]/30 shadow-2xl relative gold-border-glow"
         >
-          {/* Host Edit Badge */}
-          <button 
-            onClick={onOpenSettings}
-            className="absolute top-4 right-4 p-2 rounded-full glass-card-light text-[#9E9182] hover:text-[#C5A059] transition-colors"
-            title="Edit Date/Time Details"
-          >
-            <Edit3 className="w-4 h-4" />
-          </button>
 
           {/* Invitation Copy */}
           <p className="text-base sm:text-lg font-serif-title text-[#D4C9BC] font-light leading-relaxed mb-8 max-w-md mx-auto">
