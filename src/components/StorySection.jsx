@@ -12,8 +12,8 @@ export default function StorySection() {
           <img 
             src="/IImage.png" 
             alt="Original Kanasu Property Background" 
-            width="1672"
-            height="941"
+            width="1200"
+            height="675"
             loading="lazy"
             decoding="async"
             className="w-full h-full object-cover filter contrast-110"

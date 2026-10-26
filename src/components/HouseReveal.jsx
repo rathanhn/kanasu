@@ -45,8 +45,8 @@ export default function HouseReveal() {
               <img 
                 src="/IImage.png" 
                 alt="Actual Property Photo of Kanasu in Bylakuppe" 
-                width="1672"
-                height="941"
+                width="1200"
+                height="675"
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
@@ -95,8 +95,8 @@ export default function HouseReveal() {
             <img 
               src="/logo_transparent.png" 
               alt="ಕನಸು · KANASU Logo" 
-              width="1672"
-              height="941"
+              width="800"
+              height="450"
               loading="lazy"
               decoding="async"
               className="w-64 sm:w-80 md:w-96 h-auto object-contain drop-shadow-[0_8px_30px_rgba(197,160,89,0.35)] filter brightness-110"

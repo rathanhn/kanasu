@@ -12,8 +12,8 @@ export default function FinalReveal() {
           <img 
             src="/IImage.png" 
             alt="Original Kanasu Property Silhouette" 
-            width="1672"
-            height="941"
+            width="1200"
+            height="675"
             loading="lazy"
             decoding="async"
             className="w-full h-full object-cover opacity-40 filter contrast-125"
@@ -38,8 +38,8 @@ export default function FinalReveal() {
             <img 
               src="/logo_transparent.png" 
               alt="ಕನಸು · KANASU Logo" 
-              width="1672"
-              height="941"
+              width="800"
+              height="450"
               loading="lazy"
               decoding="async"
               className="w-full max-w-sm sm:max-w-md h-auto object-contain drop-shadow-[0_10px_35px_rgba(197,160,89,0.35)] filter brightness-110"

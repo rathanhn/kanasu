@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import OpeningScreen from './components/OpeningScreen';
 import DoorExperience from './components/DoorExperience';
 import HouseReveal from './components/HouseReveal';
@@ -9,11 +9,12 @@ import LocationSection from './components/LocationSection';
 import RsvpSection from './components/RsvpSection';
 import FinalReveal from './components/FinalReveal';
 import FloatingNav from './components/FloatingNav';
-import AdminDashboard from './components/AdminDashboard';
-import SharePage from './components/SharePage';
 import { HOST_CONTACTS } from './components/RsvpSection';
 import { trackPageVisit } from './utils/firebase';
 import { ambientAudio } from './utils/audioSystem';
+
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const SharePage = lazy(() => import('./components/SharePage'));
 
 const DEFAULT_EVENT_DETAILS = {
   date: 'Sunday, 15th November 2026',
@@ -77,7 +78,11 @@ export default function App() {
   useEffect(() => {
     localStorage.removeItem('kanasu_event_details');
     trackPageVisit();
-    ambientAudio.start();
+    // Allow critical visual assets to paint instantly before starting audio stream
+    const audioTimer = setTimeout(() => {
+      ambientAudio.start();
+    }, 250);
+    return () => clearTimeout(audioTimer);
   }, []);
 
   const handleEnterHome = () => {
@@ -140,12 +145,20 @@ export default function App() {
 
   // If viewing /admin, render Admin Dashboard
   if (currentRoute === 'admin') {
-    return <AdminDashboard onBackToInvitation={navigateToHome} />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-[#121110] text-[#C5A059] flex items-center justify-center font-serif text-lg">Loading Admin...</div>}>
+        <AdminDashboard onBackToInvitation={navigateToHome} />
+      </Suspense>
+    );
   }
 
   // If viewing /share, render dedicated Share Page
   if (currentRoute === 'share') {
-    return <SharePage onBackToInvitation={navigateToHome} eventDetails={eventDetails} />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-[#121110] text-[#C5A059] flex items-center justify-center font-serif text-lg">Loading...</div>}>
+        <SharePage onBackToInvitation={navigateToHome} eventDetails={eventDetails} />
+      </Suspense>
+    );
   }
 
   return (

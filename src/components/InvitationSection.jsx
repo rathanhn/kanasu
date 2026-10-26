@@ -69,8 +69,8 @@ export default function InvitationSection({ eventDetails }) {
               <img 
                 src="/logo_transparent.png" 
                 alt="ಕನಸು · KANASU Logo" 
-                width="1672"
-                height="941"
+                width="800"
+                height="450"
                 loading="lazy"
                 decoding="async"
                 className="w-56 sm:w-64 h-auto object-contain drop-shadow-[0_6px_25px_rgba(197,160,89,0.35)] mb-1"

@@ -50,8 +50,8 @@ export default function OpeningScreen({ onEnterHome }) {
             <img 
               src="/logo_transparent.png" 
               alt="ಕನಸು · KANASU Housewarming Logo" 
-              width="1672"
-              height="941"
+              width="800"
+              height="450"
               fetchPriority="high"
               loading="eager"
               decoding="sync"

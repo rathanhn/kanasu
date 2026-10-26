@@ -54,8 +54,8 @@ export default function DoorExperience({ onDoorOpened }) {
             <img 
               src="/IImage.png" 
               alt="Kanasu Property Preview" 
-              width="1672"
-              height="941"
+              width="1200"
+              height="675"
               loading="eager"
               decoding="async"
               className={`w-full h-full object-cover transition-transform duration-2000 ${isOpen ? 'scale-100 filter-none' : 'scale-110 blur-sm'}`}
@@ -77,8 +77,8 @@ export default function DoorExperience({ onDoorOpened }) {
               <img 
                 src="/assets/front_door.jpg" 
                 alt="Door Left" 
-                width="1200"
-                height="896"
+                width="800"
+                height="597"
                 loading="eager"
                 decoding="async"
                 className="absolute left-0 top-0 h-full w-[200%] max-w-none object-cover opacity-90"
@@ -108,8 +108,8 @@ export default function DoorExperience({ onDoorOpened }) {
               <img 
                 src="/assets/front_door.jpg" 
                 alt="Door Right" 
-                width="1200"
-                height="896"
+                width="800"
+                height="597"
                 loading="eager"
                 decoding="async"
                 className="absolute right-0 top-0 h-full w-[200%] max-w-none object-cover opacity-90"
